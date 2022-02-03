@@ -54,7 +54,7 @@ class ConverterMulti:
         s += "): \n"
         s += "\t data_array = " 
         h = "[robot_0_msg.header.stamp.to_sec()"
-        for i in range(self.total_robot+1):
+        for i in xrange(self.total_robot+1):
             h += ", [robot_{}_msg.pose.pose.position.x,robot_{}_msg.pose.pose.position.y,robot_{}_msg.pose.pose.position.z]".format(i,i,i)
             h += ", [robot_{}_msg.pose.pose.orientation.x,robot_{}_msg.pose.pose.orientation.y,robot_{}_msg.pose.pose.orientation.z,robot_{}_msg.pose.pose.orientation.w]".format(i,i,i,i)
             h += ", [robot_{}_msg.twist.twist.linear.x,robot_{}_msg.twist.twist.linear.y,robot_{}_msg.twist.twist.linear.z]".format(i,i,i) 
@@ -126,7 +126,7 @@ class ConverterMulti:
         sub_list = []
 
         # sub_list.append(message_filters.Subscriber(DEFAULT_RUNNING_TIME_TOPIC, running_time, callback = self.ais_info_callback, queue_size=1, buff_size=2**24))
-        for id in range(0, self.total_robot +1): # global param
+        for id in xrange(self.total_robot +1): # global param
             sub_list.append(message_filters.Subscriber('/robot_{}'.format(id) + '/' + DEFAULT_AIS_TOPIC, ais_info))
             sub_list.append(message_filters.Subscriber('/robot_{}'.format(id) + '/' + DEFAULT_BOUNDARY_TOPIC, Marker))
 
@@ -136,17 +136,18 @@ class ConverterMulti:
     def time_sync_callback(self):
         """
         reference http://wiki.ros.org/message_filters
+        # https://docs.ros.org/en/api/message_filters/html/python/#message_filters.ApproximateTimeSynchronizer
 
         If some messages are of a type that doesn't contain the header field, 
         ApproximateTimeSynchronizer refuses by default adding such messages. 
         However, its Python version can be constructed with allow_headerless=True, which uses current ROS time in place of any missing header.stamp field:
         """
         sub_list = self.build_subscriber()
-        ts = message_filters.ApproximateTimeSynchronizer(sub_list, 100, 1.5, allow_headerless=True)
+        ts = message_filters.ApproximateTimeSynchronizer(sub_list, queue_size=300, slop=10.0) # 1000, 20 / 100, 5.0 r 4s
         ts.registerCallback(self.combined_callback)
 
-        while not rospy.is_shutdown():
-            rospy.spin()
+        # while not rospy.is_shutdown():
+        rospy.spin()
 
     
     def make_csv(self, data_array):
