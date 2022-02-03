@@ -17,12 +17,12 @@ import csv
 import rospy
 
 # custom modules
-from multibags_to_csv.converter_multi import ConverterMulti
+from multibags_to_csv.ConverterMulti import ConverterMulti
 
 
 def main():
     # node initialization
-    rospy.init_node('time_sync_bag_to_csv')
+    rospy.init_node('csv_converter')
     rospy.sleep(1)
 
     # class instantiation for time sync subscriber

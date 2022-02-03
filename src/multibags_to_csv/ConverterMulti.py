@@ -143,7 +143,7 @@ class ConverterMulti:
         However, its Python version can be constructed with allow_headerless=True, which uses current ROS time in place of any missing header.stamp field:
         """
         sub_list = self.build_subscriber()
-        ts = message_filters.ApproximateTimeSynchronizer(sub_list, queue_size=300, slop=10.0) # 1000, 20 / 100, 5.0 r 4s
+        ts = message_filters.ApproximateTimeSynchronizer(sub_list, queue_size=100, slop=10.0) # 1000, 20 / 100, 5.0 r 4s
         ts.registerCallback(self.combined_callback)
 
         # while not rospy.is_shutdown():

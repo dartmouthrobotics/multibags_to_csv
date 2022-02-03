@@ -31,7 +31,7 @@ class ConvertHarness:
     # reference: http://wiki.ros.org/roslaunch/API%20Usage
 
     def __init__(self):
-        rospy.sleep(1)
+        rospy.sleep(1.0)
    
         # self.roslaunch_args = None
 
@@ -67,7 +67,7 @@ class ConvertHarness:
         parent.start()
         rospy.on_shutdown(parent.shutdown) # killer
 
-        sleep(TEST_INITIALIZATION_WAIT_SECS)
+        # sleep(2.0)
 
         # bag_file_name extract
         bag_file_name = None
@@ -76,7 +76,7 @@ class ConvertHarness:
                 bag_file_name = arg[len('bag_file:='):]
 
         rospy.logwarn("Conversion started: {}".format(bag_file_name))
-        sleep(TEST_INITIALIZATION_WAIT_SECS)
+        # sleep(TEST_INITIALIZATION_WAIT_SECS)
 
 
         """ running conversion """
@@ -97,11 +97,14 @@ class ConvertHarness:
         sleep(3.0)
 
 
+
+
+
 if __name__ == "__main__":
     rospy.init_node('Convert_harness')
     rospy.sleep(2.0)
 
-    launch_file = ['/home/minkbrook/catkin_ws/src/multibags_to_csv/launch/converter-multi.launch']
+    launch_file = ['/home/minkbrook/catkin_ws/src/multibags_to_csv/launch/csv_converter.launch']
     # bag_files = ["/home/minkbrook/Desktop/scenario_10_1_MOA_t4_f3.0_g4.0_h1.0_T15_D15_A10_2022-01-26-09-08-48.bag", 
     #     '/home/minkbrook/Desktop/scenario_30_1_APF_t1_2022-01-25-02-28-06.bag']
 

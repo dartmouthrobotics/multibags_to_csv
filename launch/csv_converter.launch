@@ -3,7 +3,7 @@
   <arg name="node_start_delay" default="6.0" />  
 
   <!-- bag player -->
-  <node pkg="rosbag" type="play" name="ros_bag_player" args="--bags=$(arg bag_file) --rate=4" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
+  <node pkg="rosbag" type="play" name="ros_bag_player" args="--bags=$(arg bag_file) --rate=3" launch-prefix="bash -c 'sleep $(arg node_start_delay); $0 $@' " />
 
   <!-- converter -->
   <node pkg="multibags_to_csv" type="csv_converter_multi" name="csv_converter_multi" output="screen">
