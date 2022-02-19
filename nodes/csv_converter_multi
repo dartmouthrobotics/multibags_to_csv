@@ -32,8 +32,12 @@ def main():
 
     rospy.loginfo("converter initialized")
 
+    # rospy.sleep(1)
     ### main time sync and csv writer
     converter.time_sync_callback()
+
+    while not rospy.is_shutdown():
+        rospy.spin() # spin here. Inside sync callback error
 
 
 if __name__ == '__main__':

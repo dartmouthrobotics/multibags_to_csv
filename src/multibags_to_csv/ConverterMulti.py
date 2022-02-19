@@ -46,6 +46,7 @@ class ConverterMulti:
         # self.total_robot = int(rospy.get_param('/obstacle_total'))
         self.total_robot = int(self.extract_robot_number()) # cast: str -> int
 
+        rospy.sleep(1)
         # combined callback
         s = "def combined_callback(self"
         for i in range(self.total_robot+1):
@@ -60,20 +61,23 @@ class ConverterMulti:
             h += ", [robot_{}_msg.twist.twist.linear.x,robot_{}_msg.twist.twist.linear.y,robot_{}_msg.twist.twist.linear.z]".format(i,i,i) 
             h += ", [robot_{}_msg.twist.twist.angular.x,robot_{}_msg.twist.twist.angular.y,robot_{}_msg.twist.twist.angular.z], math.degrees(robot_{}_msg.heading)".format(i,i,i,i) 
             h += ", [robot_{}_boundary_msg.pose.position.x,robot_{}_boundary_msg.pose.position.y,robot_{}_boundary_msg.pose.position.z]".format(i,i,i) 
-            h += ", [robot_{}_boundary_msg.pose.orientation.x,robot_{}_boundary_msg.pose.orientation.y,robot_{}_boundary_msg.pose.orientation.z,robot_{}_boundary_msg.pose.orientation.w]".format(i,i,i,i) 
+            h += ", [robot_{}_boundary_msg.pose.orientation.x,robot_{}_boundary_msg.pose.orientation.y,robot_{}_boundary_msg.pose.orientation.z,robot_{}_boundary_msg.pose.orientation.w]".format(i,i,i,i)
+            h += ", [robot_{}_boundary_msg.scale.x,robot_{}_boundary_msg.scale.y]".format(i,i) 
+ 
         s += h
         s += "] \n"
         s += "\t self.make_csv(data_array)"
 
         exec(s)
         exec("setattr(ConverterMulti, 'combined_callback', combined_callback)")
-
+        rospy.sleep(1)
         # clean header to be added
         self.header_clean(h)
 
 
     def initializer(self):
-        self.update_save_path()
+        pass
+        # self.update_save_path()
 
 
     def extract_robot_number(self):
@@ -83,13 +87,24 @@ class ConverterMulti:
         count = 0
         range_interest = []
 
-        for i, s in enumerate(self.bag_file_name):
-            if s == "_" and count < 2:
-                count += 1
-                range_interest.append(i)
+        if 'rand_' in self.bag_file_name:
+            for i, s in enumerate(self.bag_file_name):
+                if s == "_" and count < 3:
+                    count += 1
+                    range_interest.append(i)
 
-        robot_number = self.bag_file_name[range_interest[0] + 1: range_interest[1]]
-        return robot_number
+            robot_number = self.bag_file_name[range_interest[1] + 1: range_interest[2]]
+            return robot_number
+
+        else:
+            for i, s in enumerate(self.bag_file_name):
+                if s == "_" and count < 2:
+                    count += 1
+                    range_interest.append(i)
+
+            robot_number = self.bag_file_name[range_interest[0] + 1: range_interest[1]]
+            return robot_number
+
 
 
     def header_clean(self, header_string):
@@ -108,10 +123,10 @@ class ConverterMulti:
         self.header = tmp[1:].split(", ") # separator by ", space" for each field
 
 
-    def update_save_path(self):
-        # saving path
-        rospack = rospkg.RosPack()
-        self._output_dir = rospack.get_path('time_sync_bag_to_csv') + "/rss_data/" + str(self.output_file_name)
+    # def update_save_path(self):
+    #     # saving path
+    #     rospack = rospkg.RosPack()
+    #     self._output_dir = rospack.get_path('time_sync_bag_to_csv') + "/rss_data/" + str(self.output_file_name)
 
 
     def _compass_callback(self, msg):
@@ -143,11 +158,11 @@ class ConverterMulti:
         However, its Python version can be constructed with allow_headerless=True, which uses current ROS time in place of any missing header.stamp field:
         """
         sub_list = self.build_subscriber()
-        ts = message_filters.ApproximateTimeSynchronizer(sub_list, queue_size=100, slop=10.0) # 1000, 20 / 100, 5.0 r 4s
+        ts = message_filters.ApproximateTimeSynchronizer(sub_list, queue_size=1000, slop=5.0) # 1000, 20 / 100, 5.0 r 4s
         ts.registerCallback(self.combined_callback)
 
         # while not rospy.is_shutdown():
-        rospy.spin()
+        # rospy.spin()
 
     
     def make_csv(self, data_array):

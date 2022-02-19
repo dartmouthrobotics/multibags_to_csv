@@ -34,7 +34,8 @@ def main():
     launch_file = [rospack.get_path('multibags_to_csv') + "/launch/csv_converter.launch"]
 
     # bag files
-    path = '/home/minkbrook/Desktop/testbag/' # main directory where bags located
+    # path = '/home/minkbrook/Desktop/testbag/' # main directory where bags located
+    path = '/home/minkbrook/Desktop/random/'
     bag_files = []
 
     # walker file finder 

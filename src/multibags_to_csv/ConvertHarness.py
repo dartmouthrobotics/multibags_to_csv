@@ -23,7 +23,7 @@ from rosgraph_msgs.msg import Clock
 # import custom modules
 
 TEST_INITIALIZATION_WAIT_SECS = 3.0
-DETECT_WAIT_SECS = 8.0
+DETECT_WAIT_SECS = 15.0
 DEFAULT_BAG_STATE_TOPIC = 'clock'
 
 
@@ -94,7 +94,7 @@ class ConvertHarness:
         """ finish the test """
         rospy.loginfo("Terminating ..............................")
 
-        sleep(3.0)
+        sleep(10.0)
 
 
 
