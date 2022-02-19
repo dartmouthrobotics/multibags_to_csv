@@ -48,6 +48,11 @@ catkin_make
     roslaunch multibags_to_csv auto_converter.launch
     ```
 
+* running time converter node
+    ```
+    python ConverterRuntime.py
+    ```
+
 ### TODO
 * another node for running time and robot_0 pose
 
