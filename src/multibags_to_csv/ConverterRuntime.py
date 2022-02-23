@@ -26,7 +26,7 @@ def convert_topic_to_csv(bag, bagfile_name, path):
 
     # file name extract
     file_name_start_idx = bagfile_name.find('rand_scenario_')
-    file_name_end_idx = bagfile_name.find('.')
+    file_name_end_idx = bagfile_name.find('.bag')
     file_name_header = bagfile_name[file_name_start_idx:file_name_end_idx]
 
     # pandas build
@@ -73,9 +73,13 @@ if __name__ == "__main__":
 
     # function
     for i, bagfile_name in enumerate(bagfiles):
-        print("converting start ...............................")
+        print("converting start {}...............................".format(bagfile_name))
         bag = rosbag.Bag(bagfile_name)
-        convert_topic_to_csv(bag, bagfile_name, path)
+        try:
+            convert_topic_to_csv(bag, bagfile_name, path)
 
-        print("runningtime bag to csv converted {} / {}".format(i+1, len(bagfiles)))
-        print("...................................")
+            print("runningtime bag to csv converted {} / {}".format(i+1, len(bagfiles)))
+            print("...................................")
+
+        except Exception as e:
+            print("failed to convert {}".format(e))
