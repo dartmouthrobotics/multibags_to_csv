@@ -47,11 +47,18 @@ catkin_make
     ```
     roslaunch multibags_to_csv auto_converter.launch
     ```
-
-* running time converter node
+### Additional script
+* running time converter script
+Note that the bag file contains `running_time` topic for computational time records.
     ```
     python ConverterRuntime.py
     ```
+* pose converter script
+Note that the bag file contains each agent position topic for pose.
+    ```
+    python ConvertertPosition.py
+    ```
+
 
 ### TODO
 * another node for running time and robot_0 pose

@@ -27,7 +27,6 @@ from obstacle_avoidance_ros_pkg.msg import ais_info, boundary_info, running_time
 
 timed_compass_msg = Range()
 
-OBS_TOTAL = 30
 DEFAULT_AIS_TOPIC = "ais_info"
 DEFAULT_BOUNDARY_TOPIC = "boundary"
 DEFAULT_RUNNING_TIME_TOPIC = '/running_time'
