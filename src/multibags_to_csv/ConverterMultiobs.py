@@ -6,7 +6,7 @@
     CLASS converter for multi obstacle data analysis
     
     purpose: 
-    - Class definition of 'Converter' 
+    - Class definition of 'ConverterMultiobs' 
     - properties and functions to convert .bag to .csv
 """
 
@@ -31,7 +31,7 @@ DEFAULT_AIS_TOPIC = "ais_info"
 DEFAULT_BOUNDARY_TOPIC = "boundary"
 DEFAULT_RUNNING_TIME_TOPIC = '/running_time'
 
-class ConverterMulti:
+class ConverterMultiobs:
     def __init__(self):
         """constructure"""
 

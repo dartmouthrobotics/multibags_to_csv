@@ -17,7 +17,7 @@ import csv
 import rospy
 
 # custom modules
-from multibags_to_csv.ConverterMulti import ConverterMulti
+from multibags_to_csv.ConverterMultiobs import ConverterMultiobs
 
 
 def main():
