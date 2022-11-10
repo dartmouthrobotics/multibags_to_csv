@@ -33,7 +33,7 @@ DEFAULT_RUNNING_TIME_TOPIC = '/running_time'
 
 class ConverterMultiobs:
     def __init__(self):
-        """constructure"""
+        """constructor"""
 
         self.bag_file_name = str(rospy.get_param('~bag_file'))
         self.output_file_dir_name = self.bag_file_name.replace(".bag", ".csv")
