@@ -46,6 +46,8 @@ class ConverterMultiobs:
         # self.total_robot = int(rospy.get_param('/obstacle_total'))
         self.total_robot = int(self.extract_robot_number()) # cast: str -> int
 
+        rospy.loginfo("total robot in the bag {}".format(self.total_robot))
+
         rospy.sleep(1)
         # combined callback
         s = "def combined_callback(self"
@@ -89,19 +91,23 @@ class ConverterMultiobs:
         range_interest = []
 
         if 'rand_' in self.bag_file_name:
-            for i, s in enumerate(self.bag_file_name):
-                if s == "_" and count < 3:
+            file_name_start_idx = int(self.bag_file_name.find('rand_scenario_')) # type str -> int cast
+
+            for i, s in enumerate(self.bag_file_name[file_name_start_idx:]):
+                if s == "_" and count < 3: # upto scenario_ is two
                     count += 1
-                    range_interest.append(i)
+                    range_interest.append(i + file_name_start_idx)
 
             robot_number = self.bag_file_name[range_interest[1] + 1: range_interest[2]]
             return robot_number
 
         else:
-            for i, s in enumerate(self.bag_file_name):
+            file_name_start_idx = int(self.bag_file_name.find('scenario_')) # type str -> int cast
+
+            for i, s in enumerate(self.bag_file_name[file_name_start_idx:]):
                 if s == "_" and count < 2:
                     count += 1
-                    range_interest.append(i)
+                    range_interest.append(i + file_name_start_idx)
 
             robot_number = self.bag_file_name[range_interest[0] + 1: range_interest[1]]
             return robot_number
