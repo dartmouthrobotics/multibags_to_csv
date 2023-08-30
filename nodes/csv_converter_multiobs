@@ -26,7 +26,7 @@ def main():
     rospy.sleep(1)
 
     # class instantiation for time sync subscriber
-    converter = ConverterMulti()
+    converter = ConverterMultiobs()
     # converter.initializer()
     rospy.sleep(1)
 

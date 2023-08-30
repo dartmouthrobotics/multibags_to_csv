@@ -1,0 +1,44 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/minkbrook/test_ws/devel/include/**",
+        "/home/minkbrook/simulation_ws/devel/include/**",
+        "/home/minkbrook/catkin_ws/devel/include/**",
+        "/home/minkbrook/cs269_ws_spring_2021/devel/include/**",
+        "/home/minkbrook/Desktop/bluerov/catkin_ws/devel/include/**",
+        "/home/minkbrook/vrx_ws/devel/include/**",
+        "/opt/ros/melodic/include/**",
+        "/home/minkbrook/catkin_ws/src/srv_tools/bag_tools/include/**",
+        "/home/minkbrook/catkin_ws/src/ipcamera_driver/include/**",
+        "/home/minkbrook/simulation_ws/src/mavros/libmavconn/include/**",
+        "/home/minkbrook/simulation_ws/src/mavros/mavros/include/**",
+        "/home/minkbrook/simulation_ws/src/mavros/mavros_msgs/include/**",
+        "/home/minkbrook/catkin_ws/src/ouster-ros/include/**",
+        "/home/minkbrook/Desktop/bluerov/catkin_ws/src/ping_nodelet/include/**",
+        "/home/minkbrook/catkin_ws/src/audio_common/sound_play/include/**",
+        "/home/minkbrook/test_ws/src/teb_local_planner/include/**",
+        "/home/minkbrook/simulation_ws/src/mavros/test_mavros/include/**",
+        "/home/minkbrook/vrx_ws/src/vrx/usv_gazebo_plugins/include/**",
+        "/home/minkbrook/catkin_ws/src/velodyne/velodyne_driver/include/**",
+        "/home/minkbrook/simulation_ws/src/velodyne_simulator/velodyne_gazebo_plugins/include/**",
+        "/home/minkbrook/catkin_ws/src/velodyne_height_map/include/**",
+        "/home/minkbrook/catkin_ws/src/velodyne/velodyne_laserscan/include/**",
+        "/home/minkbrook/catkin_ws/src/velodyne/velodyne_pointcloud/include/**",
+        "/home/minkbrook/vrx_ws/src/vrx/vrx_gazebo/include/**",
+        "/home/minkbrook/vrx_ws/src/vrx/wave_gazebo_plugins/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

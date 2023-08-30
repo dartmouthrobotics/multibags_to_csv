@@ -1,5 +1,7 @@
 <launch>
   <!-- auto converter -->
-  <node pkg="multibags_to_csv" type="convert_harness" name="convert_harness" output="screen" />
+  <node pkg="multibags_to_csv" type="convert_harness" name="convert_harness" output="screen">
+    <rosparam file="$(find multibags_to_csv)/param/param.yaml" command="load"/>
+  </node>
 
 </launch>

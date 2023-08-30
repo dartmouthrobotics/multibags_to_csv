@@ -38,7 +38,8 @@ catkin_make
 ## Usage
 
 ### 1. configuration of main bag path
-* Inside `nodes/convert_harness`, change `path=/home/minkbrook/Desktop/testbag/` as per the main path in your computer which includes all bags.
+* Inside `param/param.yaml`, change `bag_path:/home/minkbrook/Desktop/testbag/MOA+/` as per the main path in your computer which includes all bags.
+Make sure to close with `/` at the end of the string.
 * The code will walk through all sub-folders to find `.bag` files.
 
 ### 2. Running 
@@ -47,14 +48,17 @@ catkin_make
     ```
     roslaunch multibags_to_csv auto_converter.launch
     ```
+
 ### Additional script
 * running time converter script
-Note that the bag file contains `running_time` topic for computational time records.
+    * change the `path` inside `ConverterRuntime.py` 
+    * Note that the bag file contains `running_time` topic for computational time records.
     ```
     python ConverterRuntime.py
     ```
 * pose converter script
-Note that the bag file contains each agent position topic for pose.
+    * change the `path` inside `ConvertertPosition.py` 
+    * Note that the bag file contains each agent position topic for pose.
     ```
     python ConvertertPosition.py
     ```
@@ -62,5 +66,3 @@ Note that the bag file contains each agent position topic for pose.
 
 ### TODO
 * another node for running time and robot_0 pose
-
-

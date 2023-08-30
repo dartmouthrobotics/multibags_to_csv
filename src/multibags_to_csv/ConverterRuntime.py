@@ -15,13 +15,13 @@ import os
 from obstacle_avoidance_ros_pkg.msg import running_time
 import pandas as pd
 
-
-
+# bag files are located
+path = '/home/minkbrook/Desktop/testbag/MOA+/'
 
 def convert_topic_to_csv(bag, bagfile_name, path):
 
     # change topic
-    topic = '/running_time'
+    topic = '/robot_0/running_time'
     column_names = ['timestamp', 'runtime']
 
     # file name extract
@@ -60,8 +60,6 @@ def convert_topic_to_csv(bag, bagfile_name, path):
 
 
 if __name__ == "__main__":
-    # bag files are located
-    path = '/home/minkbrook/Desktop/random/'
     bagfiles = []
     for r, d, f in os.walk(path):
         for file in f:

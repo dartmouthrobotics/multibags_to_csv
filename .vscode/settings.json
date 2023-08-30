@@ -1,0 +1,20 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/minkbrook/test_ws/devel/lib/python2.7/dist-packages",
+        "/home/minkbrook/simulation_ws/devel/lib/python2.7/dist-packages",
+        "/home/minkbrook/catkin_ws/devel/lib/python2.7/dist-packages",
+        "/home/minkbrook/cs269_ws_spring_2021/devel/lib/python2.7/dist-packages",
+        "/home/minkbrook/Desktop/bluerov/catkin_ws/devel/lib/python2.7/dist-packages",
+        "/home/minkbrook/vrx_ws/devel/lib/python2.7/dist-packages",
+        "/opt/ros/melodic/lib/python2.7/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/minkbrook/test_ws/devel/lib/python2.7/dist-packages",
+        "/home/minkbrook/simulation_ws/devel/lib/python2.7/dist-packages",
+        "/home/minkbrook/catkin_ws/devel/lib/python2.7/dist-packages",
+        "/home/minkbrook/cs269_ws_spring_2021/devel/lib/python2.7/dist-packages",
+        "/home/minkbrook/Desktop/bluerov/catkin_ws/devel/lib/python2.7/dist-packages",
+        "/home/minkbrook/vrx_ws/devel/lib/python2.7/dist-packages",
+        "/opt/ros/melodic/lib/python2.7/dist-packages"
+    ]
+}

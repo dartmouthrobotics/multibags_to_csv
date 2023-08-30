@@ -14,12 +14,15 @@ import pandas as pd
 
 robots = range(1, 31)
 topic_name = "ais_info"
+path = '/home/minkbrook/Desktop/testbag/MOA+/' # bag files are located
+# path = '/media/minkbrook/Seagate Portable Drive/Mingi/accident/'
+
 
 def convert_topic_to_csv(bag, bagfile_name, path):
 
     for idx in robots:
         # change topic
-        # topic = '/robot_0/ais_info'
+        # topic = '/robot_0/ais_info' # incase only ego-vehicle
         topic  = '/robot_{}/{}'.format(idx, topic_name)
         column_names = ['timestamp', 'pose_x', 'pose_y']
 
@@ -62,10 +65,6 @@ def convert_topic_to_csv(bag, bagfile_name, path):
 
 
 if __name__ == "__main__":
-    # bag files are located
-    path = '/home/minkbrook/Desktop/gazebo/'
-    # path = '/media/minkbrook/Seagate Portable Drive/Mingi/accident/'
-
     bagfiles = []
     for r, d, f in os.walk(path):
         for file in f:

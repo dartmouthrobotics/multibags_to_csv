@@ -29,7 +29,9 @@ timed_compass_msg = Range()
 
 DEFAULT_AIS_TOPIC = "ais_info"
 DEFAULT_BOUNDARY_TOPIC = "boundary"
-DEFAULT_RUNNING_TIME_TOPIC = '/running_time'
+# DEFAULT_RUNNING_TIME_TOPIC = '/running_time'
+DEFAULT_RUNNING_TIME_TOPIC = '/robot_0/running_time'
+
 
 class ConverterMultiobs:
     def __init__(self):
@@ -54,11 +56,12 @@ class ConverterMultiobs:
         s += "): \n"
         s += "\t data_array = " 
         h = "[robot_0_msg.header.stamp.to_sec()"
-        for i in xrange(self.total_robot+1):
+        for i in xrange(self.total_robot+1): # header different column: comma and space
             h += ", [robot_{}_msg.pose.pose.position.x,robot_{}_msg.pose.pose.position.y,robot_{}_msg.pose.pose.position.z]".format(i,i,i)
             h += ", [robot_{}_msg.pose.pose.orientation.x,robot_{}_msg.pose.pose.orientation.y,robot_{}_msg.pose.pose.orientation.z,robot_{}_msg.pose.pose.orientation.w]".format(i,i,i,i)
             h += ", [robot_{}_msg.twist.twist.linear.x,robot_{}_msg.twist.twist.linear.y,robot_{}_msg.twist.twist.linear.z]".format(i,i,i) 
             h += ", [robot_{}_msg.twist.twist.angular.x,robot_{}_msg.twist.twist.angular.y,robot_{}_msg.twist.twist.angular.z], math.degrees(robot_{}_msg.heading)".format(i,i,i,i) 
+            h += ", [robot_{}_msg.noise]".format(i)
             h += ", [robot_{}_boundary_msg.pose.position.x,robot_{}_boundary_msg.pose.position.y,robot_{}_boundary_msg.pose.position.z]".format(i,i,i) 
             h += ", [robot_{}_boundary_msg.pose.orientation.x,robot_{}_boundary_msg.pose.orientation.y,robot_{}_boundary_msg.pose.orientation.z,robot_{}_boundary_msg.pose.orientation.w]".format(i,i,i,i)
             h += ", [robot_{}_boundary_msg.scale.x,robot_{}_boundary_msg.scale.y]".format(i,i) 
@@ -68,7 +71,7 @@ class ConverterMultiobs:
         s += "\t self.make_csv(data_array)"
 
         exec(s)
-        exec("setattr(ConverterMulti, 'combined_callback', combined_callback)")
+        exec("setattr(ConverterMultiobs, 'combined_callback', combined_callback)")
         rospy.sleep(1)
         # clean header to be added
         self.header_clean(h)

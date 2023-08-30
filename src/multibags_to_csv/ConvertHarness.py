@@ -50,7 +50,7 @@ class ConvertHarness:
 
     def run_convert(self, convert_launch_file, launch_arguments):
         rospy.loginfo("--------------------------------------------------------")
-        rospy.loginfo("conversion START")
+        rospy.logwarn("conversion START")
 
         self.clock_initialize()
 
