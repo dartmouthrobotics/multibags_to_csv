@@ -23,7 +23,10 @@ For Kinetic, you need to change the replace code of `/opt/ros/kinetic/lib/python
 
 1. obstacle_avoidance_ros_pkg
     * this pkg includes messages such as `ais_info`, `boundary`, `running_time`.
-
+2. mavros-related
+```
+sudo apt-get install ros-{yourdistro}-mavros ros-{yourdistro}-mavros-extras
+```
 
 ## Install
 Clone this package into your `catkin_ws` and do `catkin_make` for building.

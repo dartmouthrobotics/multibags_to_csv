@@ -5,7 +5,6 @@ find_package(catkin REQUIRED COMPONENTS
   mavros_msgs
   rospy
   std_msgs
-  ysi_exo
 )
 
 
@@ -23,7 +22,6 @@ catkin_package(
   rospy
   std_msgs
   mavros_msgs
-  ysi_exo
 )
 
 ###########

@@ -20,7 +20,6 @@ import math
 
 # messages
 from sensor_msgs.msg import Range
-from ysi_exo.msg import Sonde
 from visualization_msgs.msg import Marker
 
 from obstacle_avoidance_ros_pkg.msg import ais_info, boundary_info, running_time
