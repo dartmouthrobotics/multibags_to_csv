@@ -68,4 +68,4 @@ Make sure to close with `/` at the end of the string.
 
 
 ### TODO
-* another node for running time and robot_0 pose
+* ground truth extractor such as ConverterGT.py
