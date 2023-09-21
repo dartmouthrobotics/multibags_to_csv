@@ -14,15 +14,14 @@ import argparse
 
 from aux_function import extract_robot_number
 
-topic_name = "ais_info"
-# topic_name = "gps_converted_odom"
+topic_name = "mavros/global_position/raw/fix" # 1) GPS-based
 path = '' # bag files are located
 
 
 def convert_topic_to_csv(bag, bagfile_name, path):
 
     # total robot number find 
-    robots_num = extract_robot_number(bagfile_name)
+    robots_num = 3
     print("robot number {}".format(robots_num))
     
 
@@ -43,7 +42,8 @@ def convert_topic_to_csv(bag, bagfile_name, path):
         # change topic
         # topic = '/robot_0/ais_info' # incase only ego-vehicle
         topic  = '/robot_{}/{}'.format(idx, topic_name)
-        column_names = ['timestamp', 'pose_x', 'pose_y']
+        column_names = ['timestamp','latitude', 'longitude']
+
 
         
         # pandas build
@@ -56,18 +56,28 @@ def convert_topic_to_csv(bag, bagfile_name, path):
             firststamp= 0 
 
             timestamp = msg.header.stamp.to_sec()
+            # pose_msg = msg # gps
             pose_msg = msg.pose
 
             current_time = timestamp-firststamp
 
-            # append deperecated
+            # 1) GPS-based
             df  = pd.concat([df, 
                             pd.DataFrame([{'timestamp': current_time,
                             # 'pose_x': [pose_msg.pose.position.x, pose_msg.pose.position.y],
-                            'pose_x': pose_msg.pose.position.x,
-                            'pose_y': pose_msg.pose.position.y}])
+                            'latitude': pose_msg.latitude,
+                            'longitude': pose_msg.longitude}])
                             ],
                             ignore_index = True)
+
+            # 2) odom-based
+            # df  = pd.concat([df, 
+            #                 pd.DataFrame([{'timestamp': current_time,
+            #                 # 'pose_x': [pose_msg.pose.position.x, pose_msg.pose.position.y],
+            #                 'pose_x': pose_msg.pose.position.x,
+            #                 'pose_y': pose_msg.pose.position.y}])
+            #                 ],
+            #                 ignore_index = True)
 
 
             if not first_msg_built:
