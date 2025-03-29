@@ -40,6 +40,8 @@ catkin_make
 
 ## Usage
 
+### Multiple bag converter 
+--- 
 ### 1. configuration of main bag path
 * Inside `param/param.yaml`, change `bag_path:/home/minkbrook/Desktop/testbag/MOA+/` as per the main path in your computer which includes all bags.
 Make sure to close with `/` at the end of the string.
@@ -47,12 +49,13 @@ Make sure to close with `/` at the end of the string.
 
 ### 2. Running 
 
-* run the auto converter node
+* run the auto converter node (time-sync csv across all agents)
     ```
     roslaunch multibags_to_csv auto_converter.launch
     ```
 
 ### Additional script
+--- 
 * running time converter script
     * change the `path` inside `ConverterRuntime.py` 
     * Note that the bag file contains `running_time` topic for computational time records.
@@ -65,7 +68,12 @@ Make sure to close with `/` at the end of the string.
     ```
     python ConvertertPosition.py
     ```
-
+* Single python script that can do all
+    * change indiv-converter.yaml file first! 
+    * change PARAM_INTEREST
+    ```
+    python ConverterParams.py -p /mnt/mydrive/catabot_bag/barbados2024/test/test/
+    ```
 
 ### TODO
 * ground truth extractor such as ConverterGT.py

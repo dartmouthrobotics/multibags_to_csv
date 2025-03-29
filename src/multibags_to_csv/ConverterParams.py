@@ -57,7 +57,7 @@ def time_mapper(t, bag_start_time, msg, time_base_by_bag, first_msg_built):
         firststamp = 0
 
         # TODO by first message time stamp
-        # strictly speaking, it was not synced across robots
+        # strictly speaking, it was not synced across robots (for first start time)
         if not first_msg_built:
             firststamp = msg.header.stamp.to_sec()
             first_msg_built = True
@@ -208,7 +208,9 @@ def convert_topic_to_csv(bag, bagfile_name, path, _param_interest):
 
     # -----------------------------------------------------
     #### yaml read
-    topic_name, robots_num, total_robot_extract_by_bag, topic_ns, time_base_by_bag = read_yaml(_param_interest)
+    topic_name, robots_num, total_robot_extract_by_bag, topic_ns, time_base_by_bag = read_yaml(
+        _param_interest
+    )
     # total robot number find
     if total_robot_extract_by_bag:
         robots_num = extract_robot_number(bagfile_name)
@@ -259,11 +261,17 @@ def convert_topic_to_csv(bag, bagfile_name, path, _param_interest):
 
             #### each msg extrat and append to DF
             for topic, msg, t in bag.read_messages(topics=topic):
-                current_time = time_mapper(t, bag_start_time, msg, time_base_by_bag, first_msg_built)
-                df = append_param_df(df, param_interest=_param_interest, msg=msg, current_time=current_time, idx=idx)
+                current_time = time_mapper(
+                    t, bag_start_time, msg, time_base_by_bag, first_msg_built
+                )
+                df = append_param_df(
+                    df, param_interest=_param_interest, msg=msg, current_time=current_time, idx=idx
+                )
 
             # csv saver
-            df.to_csv("{}/{}_{}.csv".format(file_name_header, _param_interest, idx))  # file_name_header as new foler
+            df.to_csv(
+                "{}/{}_{}.csv".format(file_name_header, _param_interest, idx)
+            )  # file_name_header as new foler
             if _param_interest == "runtime":
                 break
 
@@ -301,7 +309,9 @@ if __name__ == "__main__":
             for _param_interest in PARAM_INTEREST:
                 convert_topic_to_csv(bag, bagfile_name, path, _param_interest)
 
-                print("{} bag to csv converted {} / {}".format(_param_interest, i + 1, len(bagfiles)))
+                print(
+                    "{} bag to csv converted {} / {}".format(_param_interest, i + 1, len(bagfiles))
+                )
                 print("...................................")
 
         except Exception as e:

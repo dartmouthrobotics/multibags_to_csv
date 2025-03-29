@@ -1,12 +1,27 @@
-total_robot: 4
+# total_robot: 4
+# topic_ns: "robot" # "target"
+
+# param_set:
+#   time_base_by_bag: True
+#   total_robot_extract_by_bag: False
+
+# topic_name:
+#   pose: "ais_info" # "odom", "gps_converted_odom"
+#   boundary: "boundary"
+#   runtime: "running_time"
+#   gps: "mavros/global_position/raw/fix" 
+#   lstm: "LSTM_out"
+
+total_robot: 1 # excluding own ASV
 topic_ns: "robot" # "target"
 
 param_set:
   time_base_by_bag: True
   total_robot_extract_by_bag: False
 
+# in the end Param Interest in the python script will handle
 topic_name:
-  pose: "ais_info" # "odom", "gps_converted_odom"
+  pose: "odom" # "odom", "gps_converted_odom"
   boundary: "boundary"
   runtime: "running_time"
   gps: "mavros/global_position/raw/fix" 

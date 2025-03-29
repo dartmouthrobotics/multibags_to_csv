@@ -26,47 +26,60 @@ from obstacle_avoidance_ros_pkg.msg import ais_info, boundary_info, running_time
 
 timed_compass_msg = Range()
 
+### time sync topics
 DEFAULT_AIS_TOPIC = "ais_info"
 DEFAULT_BOUNDARY_TOPIC = "boundary"
 # DEFAULT_RUNNING_TIME_TOPIC = '/running_time'
-DEFAULT_RUNNING_TIME_TOPIC = '/robot_0/running_time'
+DEFAULT_RUNNING_TIME_TOPIC = "/robot_0/running_time"
 
 
 class ConverterMultiobs:
     def __init__(self):
         """constructor"""
 
-        self.bag_file_name = str(rospy.get_param('~bag_file'))
+        self.bag_file_name = str(rospy.get_param("~bag_file"))
         self.output_file_dir_name = self.bag_file_name.replace(".bag", ".csv")
 
         # self._output_dir = None
         self.first_row = True
         self.header = None
-        
+
         # self.total_robot = int(rospy.get_param('/obstacle_total'))
-        self.total_robot = int(self.extract_robot_number()) # cast: str -> int
+        self.total_robot = int(self.extract_robot_number())  # cast: str -> int
 
         rospy.loginfo("total robot in the bag {}".format(self.total_robot))
 
         rospy.sleep(1)
         # combined callback
         s = "def combined_callback(self"
-        for i in range(self.total_robot+1):
+        for i in range(self.total_robot + 1):
             s += ", robot_" + str(i) + "_msg"
             s += ", robot_" + str(i) + "_boundary_msg"
         s += "): \n"
-        s += "\t data_array = " 
+        s += "\t data_array = "
         h = "[robot_0_msg.header.stamp.to_sec()"
-        for i in xrange(self.total_robot+1): # header different column: comma and space
-            h += ", [robot_{}_msg.pose.pose.position.x,robot_{}_msg.pose.pose.position.y,robot_{}_msg.pose.pose.position.z]".format(i,i,i)
-            h += ", [robot_{}_msg.pose.pose.orientation.x,robot_{}_msg.pose.pose.orientation.y,robot_{}_msg.pose.pose.orientation.z,robot_{}_msg.pose.pose.orientation.w]".format(i,i,i,i)
-            h += ", [robot_{}_msg.twist.twist.linear.x,robot_{}_msg.twist.twist.linear.y,robot_{}_msg.twist.twist.linear.z]".format(i,i,i) 
-            h += ", [robot_{}_msg.twist.twist.angular.x,robot_{}_msg.twist.twist.angular.y,robot_{}_msg.twist.twist.angular.z], math.degrees(robot_{}_msg.heading)".format(i,i,i,i) 
+        for i in xrange(self.total_robot + 1):  # header different column: comma and space
+            h += ", [robot_{}_msg.pose.pose.position.x,robot_{}_msg.pose.pose.position.y,robot_{}_msg.pose.pose.position.z]".format(
+                i, i, i
+            )
+            h += ", [robot_{}_msg.pose.pose.orientation.x,robot_{}_msg.pose.pose.orientation.y,robot_{}_msg.pose.pose.orientation.z,robot_{}_msg.pose.pose.orientation.w]".format(
+                i, i, i, i
+            )
+            h += ", [robot_{}_msg.twist.twist.linear.x,robot_{}_msg.twist.twist.linear.y,robot_{}_msg.twist.twist.linear.z]".format(
+                i, i, i
+            )
+            h += ", [robot_{}_msg.twist.twist.angular.x,robot_{}_msg.twist.twist.angular.y,robot_{}_msg.twist.twist.angular.z], math.degrees(robot_{}_msg.heading)".format(
+                i, i, i, i
+            )
             h += ", [robot_{}_msg.noise]".format(i)
-            h += ", [robot_{}_boundary_msg.pose.position.x,robot_{}_boundary_msg.pose.position.y,robot_{}_boundary_msg.pose.position.z]".format(i,i,i) 
-            h += ", [robot_{}_boundary_msg.pose.orientation.x,robot_{}_boundary_msg.pose.orientation.y,robot_{}_boundary_msg.pose.orientation.z,robot_{}_boundary_msg.pose.orientation.w]".format(i,i,i,i)
-            h += ", [robot_{}_boundary_msg.scale.x,robot_{}_boundary_msg.scale.y]".format(i,i) 
- 
+            h += ", [robot_{}_boundary_msg.pose.position.x,robot_{}_boundary_msg.pose.position.y,robot_{}_boundary_msg.pose.position.z]".format(
+                i, i, i
+            )
+            h += ", [robot_{}_boundary_msg.pose.orientation.x,robot_{}_boundary_msg.pose.orientation.y,robot_{}_boundary_msg.pose.orientation.z,robot_{}_boundary_msg.pose.orientation.w]".format(
+                i, i, i, i
+            )
+            h += ", [robot_{}_boundary_msg.scale.x,robot_{}_boundary_msg.scale.y]".format(i, i)
+
         s += h
         s += "] \n"
         s += "\t self.make_csv(data_array)"
@@ -77,11 +90,9 @@ class ConverterMultiobs:
         # clean header to be added
         self.header_clean(h)
 
-
     def initializer(self):
         pass
         # self.update_save_path()
-
 
     def extract_robot_number(self):
         """
@@ -90,96 +101,101 @@ class ConverterMultiobs:
         count = 0
         range_interest = []
 
-        if 'rand_' in self.bag_file_name:
-            file_name_start_idx = int(self.bag_file_name.find('rand_scenario_')) # type str -> int cast
+        if "rand_" in self.bag_file_name:
+            file_name_start_idx = int(
+                self.bag_file_name.find("rand_scenario_")
+            )  # type str -> int cast
 
             for i, s in enumerate(self.bag_file_name[file_name_start_idx:]):
-                if s == "_" and count < 3: # upto scenario_ is two
+                if s == "_" and count < 3:  # upto scenario_ is two
                     count += 1
                     range_interest.append(i + file_name_start_idx)
 
-            robot_number = self.bag_file_name[range_interest[1] + 1: range_interest[2]]
+            robot_number = self.bag_file_name[range_interest[1] + 1 : range_interest[2]]
             return robot_number
 
         else:
-            file_name_start_idx = int(self.bag_file_name.find('scenario_')) # type str -> int cast
+            file_name_start_idx = int(self.bag_file_name.find("scenario_"))  # type str -> int cast
 
             for i, s in enumerate(self.bag_file_name[file_name_start_idx:]):
                 if s == "_" and count < 2:
                     count += 1
                     range_interest.append(i + file_name_start_idx)
 
-            robot_number = self.bag_file_name[range_interest[0] + 1: range_interest[1]]
+            robot_number = self.bag_file_name[range_interest[0] + 1 : range_interest[1]]
             return robot_number
-
-
 
     def header_clean(self, header_string):
         """
         clean up header string based on strings input for exec
         """
-        tmp = header_string.replace('math.degrees','')
-        tmp = tmp.replace('(','')
-        tmp = tmp.replace(')','')
+        tmp = header_string.replace("math.degrees", "")
+        tmp = tmp.replace("(", "")
+        tmp = tmp.replace(")", "")
 
         # tmp = tmp.replace('[','')
         # tmp = tmp.replace(']','')
 
         # separately save header with only strings
         # if '[' replace --> tmp[:]
-        self.header = tmp[1:].split(", ") # separator by ", space" for each field
-
+        self.header = tmp[1:].split(", ")  # separator by ", space" for each field
 
     # def update_save_path(self):
     #     # saving path
     #     rospack = rospkg.RosPack()
     #     self._output_dir = rospack.get_path('time_sync_bag_to_csv') + "/rss_data/" + str(self.output_file_name)
 
-
     def _compass_callback(self, msg):
         """
         compass does not have timestamp, so we map timestamp with current time
         """
         timed_compass_msg.header.stamp = rospy.Time.now()
-        timed_compass_msg.range = msg.data # compass heading NED frame
-
+        timed_compass_msg.range = msg.data  # compass heading NED frame
 
     def build_subscriber(self):
         sub_list = []
 
         # sub_list.append(message_filters.Subscriber(DEFAULT_RUNNING_TIME_TOPIC, running_time, callback = self.ais_info_callback, queue_size=1, buff_size=2**24))
-        for id in xrange(self.total_robot +1): # global param
-            sub_list.append(message_filters.Subscriber('/robot_{}'.format(id) + '/' + DEFAULT_AIS_TOPIC, ais_info))
-            sub_list.append(message_filters.Subscriber('/robot_{}'.format(id) + '/' + DEFAULT_BOUNDARY_TOPIC, Marker))
+        for id in xrange(self.total_robot + 1):  # global param
+            sub_list.append(
+                message_filters.Subscriber(
+                    "/robot_{}".format(id) + "/" + DEFAULT_AIS_TOPIC, ais_info
+                )
+            )
+            sub_list.append(
+                message_filters.Subscriber(
+                    "/robot_{}".format(id) + "/" + DEFAULT_BOUNDARY_TOPIC, Marker
+                )
+            )
 
         return sub_list
-
 
     def time_sync_callback(self):
         """
         reference http://wiki.ros.org/message_filters
         # https://docs.ros.org/en/api/message_filters/html/python/#message_filters.ApproximateTimeSynchronizer
 
-        If some messages are of a type that doesn't contain the header field, 
-        ApproximateTimeSynchronizer refuses by default adding such messages. 
+        If some messages are of a type that doesn't contain the header field,
+        ApproximateTimeSynchronizer refuses by default adding such messages.
         However, its Python version can be constructed with allow_headerless=True, which uses current ROS time in place of any missing header.stamp field:
         """
         sub_list = self.build_subscriber()
-        ts = message_filters.ApproximateTimeSynchronizer(sub_list, queue_size=100, slop=5.0) # 1000, 20 / 100, 5.0 or 4s
+        ts = message_filters.ApproximateTimeSynchronizer(
+            sub_list, queue_size=100, slop=5.0
+        )  # 1000, 20 / 100, 5.0 or 4s
         ts.registerCallback(self.combined_callback)
 
         # while not rospy.is_shutdown():
         # rospy.spin()
 
-    
     def make_csv(self, data_array):
         """
         write csv file with data array
         """
 
-        with open(self.output_file_dir_name, 'a') as csv_file:
+        with open(self.output_file_dir_name, "a") as csv_file:
             writer = csv.writer(csv_file)
-            
+
             # header rows
             if self.first_row:
                 # writer.writerow([i for i in self.header])
@@ -189,5 +205,3 @@ class ConverterMultiobs:
             # main data rows
             writer.writerow(data_array)
             rospy.loginfo("data saving!")
-
-    

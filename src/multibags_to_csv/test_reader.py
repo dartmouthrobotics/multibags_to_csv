@@ -28,8 +28,8 @@ def guess_msgtype(path: Path) -> str:
 # custom message type register
 add_types = {}
 for pathstr in [
-    "/home/mingi/vnc-ros-noetic/workspace/src/passing_intention_lstm/msg/DictionaryLSTMMsg.msg",
-    "/home/mingi/vnc-ros-noetic/workspace/src/passing_intention_lstm/msg/KeyValueLSTMMsg.msg",
+    "/home/mingi/vnc-ros-noetic/workspace/src/passing_intention_lstm_ros/msg/DictionaryLSTMMsg.msg",
+    "/home/mingi/vnc-ros-noetic/workspace/src/passing_intention_lstm_ros/msg/KeyValueLSTMMsg.msg",
 ]:
     msgpath = Path(pathstr)
     msgdef = msgpath.read_text(encoding="utf-8")
@@ -119,4 +119,6 @@ def ros2api_reader_lstm(bagfile_name, topic_name, robots_num, file_name_header, 
                 continue  # other topic keip
 
             # per object save
-            df.to_csv("{}/{}_{}.csv".format(file_name_header, _param_interest, idx))  # file_name_header as new foler
+            df.to_csv(
+                "{}/{}_{}.csv".format(file_name_header, _param_interest, idx)
+            )  # file_name_header as new foler
