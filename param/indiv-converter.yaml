@@ -1,4 +1,4 @@
-# total_robot: 4
+# total_robot: 4 # except own ASV
 # topic_ns: "robot" # "target"
 
 # param_set:
@@ -12,12 +12,13 @@
 #   gps: "mavros/global_position/raw/fix" 
 #   lstm: "LSTM_out"
 
-total_robot: 1 # excluding own ASV
+total_robot: 0 # except own ASV
 topic_ns: "robot" # "target"
 
 param_set:
   time_base_by_bag: True
   total_robot_extract_by_bag: False
+  name_space_flag: False # False:"robot" namespace is not used --> directly 
 
 # in the end Param Interest in the python script will handle
 topic_name:
@@ -26,3 +27,4 @@ topic_name:
   runtime: "running_time"
   gps: "mavros/global_position/raw/fix" 
   lstm: "LSTM_out"
+  imu: "mavros/imu/data"

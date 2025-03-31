@@ -69,7 +69,7 @@ with Reader("/mnt/mydrive/catabot_bag/barbados2024/test/test/catabot-5_2024-02-2
 """
 
 
-def ros2api_reader_lstm(bagfile_name, topic_name, robots_num, file_name_header, _param_interest):
+def ros2api_reader_lstm(bagfile_name, topic_name, robots_num, file_name_header, _param_interest, name_space_flag):
     """
     bagfile_name (str): "/mnt/mydrive/catabot_bag/barbados2024/test/test/catabot-5_2024-02-20-09-47-16.bag"
     """
@@ -116,7 +116,10 @@ def ros2api_reader_lstm(bagfile_name, topic_name, robots_num, file_name_header, 
                                 ignore_index=True,
                             )
 
-                continue  # other topic keip
+                continue  # other topic skip
+
+            if not name_space_flag:
+                df = df.drop('obj_ID', axis=1) # obj_ID column drop
 
             # per object save
             df.to_csv(
