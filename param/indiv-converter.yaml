@@ -12,19 +12,40 @@
 #   gps: "mavros/global_position/raw/fix" 
 #   lstm: "LSTM_out"
 
-total_robot: 0 # except own ASV
-topic_ns: "robot" # "target"
+# ----------------------------------------------------------
+# total_robot: 0 # except own ASV
+# topic_ns: "robot" # "target"
+
+# param_set:
+#   time_base_by_bag: True
+#   total_robot_extract_by_bag: False
+#   name_space_flag: False # False:"robot" namespace is not used --> directly 
+
+# # in the end Param Interest in the python script will handle
+# topic_name:
+#   pose: "odom" # "odom", "gps_converted_odom"
+#   boundary: "boundary"
+#   runtime: "running_time"
+#   gps: "mavros/global_position/raw/fix" 
+#   lstm: "LSTM_out"
+#   imu: "mavros/imu/data"
+
+
+# ----------------------------------------------------------
+# DUCK - trajectory plot only visualizer topic
+total_robot: 49 # except own ASV
+topic_ns: "target" # "target" # drone
 
 param_set:
-  time_base_by_bag: True
-  total_robot_extract_by_bag: False
-  name_space_flag: False # False:"robot" namespace is not used --> directly 
+  time_base_by_bag: False # if False: ensure to change properly firststamp in the script
+  total_robot_extract_by_bag: False 
+  name_space_flag: True # False:"robot" namespace is not used --> directly 
 
 # in the end Param Interest in the python script will handle
 topic_name:
-  pose: "odom" # "odom", "gps_converted_odom"
-  boundary: "boundary"
-  runtime: "running_time"
-  gps: "mavros/global_position/raw/fix" 
-  lstm: "LSTM_out"
-  imu: "mavros/imu/data"
+  pose: "target_visualizer" # "drone_visualizer" target_visualizer
+  boundary: "dummy"
+  runtime: "dummy"
+  gps: "dummy"
+  lstm: "dummy"
+  imu: "dummy"

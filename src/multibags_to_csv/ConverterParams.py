@@ -22,10 +22,12 @@ import yaml
 from aux_function import extract_robot_number
 from test_reader import ros2api_reader_lstm
 
+# this will make sure to read in indiv-converter.mparam
 # PARAM_INTEREST = ["pose", "boundary", "gps", "runtime"]
 # PARAM_INTEREST = ["lstm"]
 # PARAM_INTEREST = ["pose", "lstm"]
-PARAM_INTEREST = ["imu", "gps"]
+# PARAM_INTEREST = ["imu", "gps"] # motion data for dataset
+PARAM_INTEREST = ["pose"]  # duck trajectory plot
 
 # TODO
 # get robot name based on recorded topic --> get index
@@ -41,12 +43,21 @@ def read_yaml(_param_interest):
 
     topic_name = data_loaded["topic_name"][_param_interest]  # str
     robots_num = data_loaded["total_robot"]  # int
-    total_robot_extract_by_bag = data_loaded["param_set"]["total_robot_extract_by_bag"]  # bool
+    total_robot_extract_by_bag = data_loaded["param_set"][
+        "total_robot_extract_by_bag"
+    ]  # bool
     time_base_by_bag = data_loaded["param_set"]["time_base_by_bag"]  # bool
     name_space_flag = data_loaded["param_set"]["name_space_flag"]  # bool
     topic_ns = data_loaded["topic_ns"]  # str
 
-    return topic_name, robots_num, total_robot_extract_by_bag, topic_ns, time_base_by_bag, name_space_flag
+    return (
+        topic_name,
+        robots_num,
+        total_robot_extract_by_bag,
+        topic_ns,
+        time_base_by_bag,
+        name_space_flag,
+    )
 
 
 def time_mapper(t, bag_start_time, msg, time_base_by_bag, first_msg_built):
@@ -103,9 +114,16 @@ def get_param_column(param_interest, name_space_flag):
         column_names = ["timestamp", "obj_ID", "lstm_l", "lstm_r"]
 
     elif param_interest == "imu":
-        column_names = ["timestamp", "obj_ID", "lin_x", "lin_y", "lin_z", "ang_x", "ang_y", "ang_z"]
-
-
+        column_names = [
+            "timestamp",
+            "obj_ID",
+            "lin_x",
+            "lin_y",
+            "lin_z",
+            "ang_x",
+            "ang_y",
+            "ang_z",
+        ]
 
     return column_names
 
@@ -115,23 +133,42 @@ def append_param_df(df, param_interest, msg, current_time, idx, name_space_flag)
     depending on param interst --> append df
     """
     if param_interest == "pose":
-        # append deperecated
-        df = pd.concat(
-            [
-                df,
-                pd.DataFrame(
-                    [
-                        {
-                            "timestamp": current_time,
-                            "obj_ID": idx,
-                            "pose_x": msg.pose.pose.position.x,
-                            "pose_y": msg.pose.pose.position.y,
-                        }
-                    ]
-                ),
-            ],
-            ignore_index=True,
-        )
+        if hasattr(msg.pose, "pose"):
+            # append deperecated
+            df = pd.concat(
+                [
+                    df,
+                    pd.DataFrame(
+                        [
+                            {
+                                "timestamp": current_time,
+                                "obj_ID": idx,
+                                "pose_x": msg.pose.pose.position.x,
+                                "pose_y": msg.pose.pose.position.y,
+                            }
+                        ]
+                    ),
+                ],
+                ignore_index=True,
+            )
+        else:
+            # append deperecated
+            df = pd.concat(
+                [
+                    df,
+                    pd.DataFrame(
+                        [
+                            {
+                                "timestamp": current_time,
+                                "obj_ID": idx,
+                                "pose_x": msg.pose.position.x,
+                                "pose_y": msg.pose.position.y,
+                            }
+                        ]
+                    ),
+                ],
+                ignore_index=True,
+            )
 
     elif param_interest == "boundary":
 
@@ -217,12 +254,12 @@ def append_param_df(df, param_interest, msg, current_time, idx, name_space_flag)
                         {
                             "timestamp": current_time,
                             "obj_ID": idx,
-                            "lin_x": msg.linear_acceleration.x, 
-                            "lin_y": msg.linear_acceleration.y, 
-                            "lin_z": msg.linear_acceleration.z, 
-                            "ang_x": msg.angular_velocity.x, 
-                            "ang_y": msg.angular_velocity.y, 
-                            "ang_z": msg.angular_velocity.z
+                            "lin_x": msg.linear_acceleration.x,
+                            "lin_y": msg.linear_acceleration.y,
+                            "lin_z": msg.linear_acceleration.z,
+                            "ang_x": msg.angular_velocity.x,
+                            "ang_y": msg.angular_velocity.y,
+                            "ang_z": msg.angular_velocity.z,
                         }
                     ]
                 ),
@@ -231,7 +268,7 @@ def append_param_df(df, param_interest, msg, current_time, idx, name_space_flag)
         )
 
     if not name_space_flag:
-        df = df.drop('obj_ID', axis=1) # obj_ID column drop
+        df = df.drop("obj_ID", axis=1)  # obj_ID column drop
 
     return df
 
@@ -240,9 +277,14 @@ def convert_topic_to_csv(bag, bagfile_name, path, _param_interest):
 
     # -----------------------------------------------------
     #### yaml read
-    topic_name, robots_num, total_robot_extract_by_bag, topic_ns, time_base_by_bag, name_space_flag = read_yaml(
-        _param_interest
-    )
+    (
+        topic_name,
+        robots_num,
+        total_robot_extract_by_bag,
+        topic_ns,
+        time_base_by_bag,
+        name_space_flag,
+    ) = read_yaml(_param_interest)
     # total robot number find
     if total_robot_extract_by_bag:
         robots_num = extract_robot_number(bagfile_name)
@@ -268,11 +310,22 @@ def convert_topic_to_csv(bag, bagfile_name, path, _param_interest):
     # -----------------------------------------------------
 
     if _param_interest == "lstm":
-        topic = "/{}_0/{}".format(topic_ns, topic_name) if name_space_flag else "/{}".format(topic_name) # incase only ego-vehicle\
+        topic = (
+            "/{}_0/{}".format(topic_ns, topic_name)
+            if name_space_flag
+            else "/{}".format(topic_name)
+        )  # incase only ego-vehicle\
         print("topic name {}".format(topic))
 
         # ros2 api-based saver
-        ros2api_reader_lstm(bagfile_name, topic, robots_num, file_name_header, _param_interest, name_space_flag)
+        ros2api_reader_lstm(
+            bagfile_name,
+            topic,
+            robots_num,
+            file_name_header,
+            _param_interest,
+            name_space_flag,
+        )
 
     else:
         # -----------------------------------------------------
@@ -280,14 +333,20 @@ def convert_topic_to_csv(bag, bagfile_name, path, _param_interest):
         for idx in range(robots_num + 1):
             # change topic
             # topic = '/{}_0/{}'.format(topic_ns, topic_name) # incase only ego-vehicle
-            topic = "/{}_{}/{}".format(topic_ns, idx, topic_name) if name_space_flag else "/{}".format(topic_name)
+            topic = (
+                "/{}_{}/{}".format(topic_ns, idx, topic_name)
+                if name_space_flag
+                else "/{}".format(topic_name)
+            )
             print("topic name {}".format(topic))
 
             # pandas build
-            column_names = get_param_column(param_interest=_param_interest, name_space_flag=name_space_flag)
+            column_names = get_param_column(
+                param_interest=_param_interest, name_space_flag=name_space_flag
+            )
             df = pd.DataFrame(columns=column_names)
 
-            first_msg_built = False
+            first_msg_built = True
 
             # -----------------------------------------------------
 
@@ -297,7 +356,12 @@ def convert_topic_to_csv(bag, bagfile_name, path, _param_interest):
                     t, bag_start_time, msg, time_base_by_bag, first_msg_built
                 )
                 df = append_param_df(
-                    df, param_interest=_param_interest, msg=msg, current_time=current_time, idx=idx, name_space_flag=name_space_flag
+                    df,
+                    param_interest=_param_interest,
+                    msg=msg,
+                    current_time=current_time,
+                    idx=idx,
+                    name_space_flag=name_space_flag,
                 )
 
             # csv saver
@@ -315,7 +379,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="test")
 
     # Adding optional argument
-    parser.add_argument("-p", "--path_dir", help="path where bag file located")
+    parser.add_argument(
+        "-p", "--path_dir", help="path where bag file located"
+    )  # folder name
 
     # Read arguments from command line
     args = parser.parse_args()
@@ -344,7 +410,9 @@ if __name__ == "__main__":
                 convert_topic_to_csv(bag, bagfile_name, path, _param_interest)
 
                 print(
-                    "{} bag to csv converted {} / {}".format(_param_interest, i + 1, len(bagfiles))
+                    "{} bag to csv converted {} / {}".format(
+                        _param_interest, i + 1, len(bagfiles)
+                    )
                 )
                 print("...................................")
 
