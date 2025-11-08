@@ -40,6 +40,10 @@ catkin_make
 
 ## Usage
 
+### Multiple bag converter 
+--- 
+In principle, this converter is playing the bag and running time sync converter as a single .csv combined. 
+
 ### 1. configuration of main bag path
 * Inside `param/param.yaml`, change `bag_path:/home/minkbrook/Desktop/testbag/MOA+/` as per the main path in your computer which includes all bags.
 Make sure to close with `/` at the end of the string.
@@ -47,25 +51,34 @@ Make sure to close with `/` at the end of the string.
 
 ### 2. Running 
 
-* run the auto converter node
+* run the auto converter node (time-sync csv across all agents)
     ```
     roslaunch multibags_to_csv auto_converter.launch
     ```
 
 ### Additional script
-* running time converter script
+--- 
+This below does not require playing the bag and directly convert to .csv, e.g., each drone to separate .csv
+* running time converter script (old)
     * change the `path` inside `ConverterRuntime.py` 
     * Note that the bag file contains `running_time` topic for computational time records.
     ```
     python ConverterRuntime.py
     ```
-* pose converter script
+* pose converter script (old)
     * change the `path` inside `ConvertertPosition.py` 
     * Note that the bag file contains each agent position topic for pose.
     ```
     python ConvertertPosition.py
     ```
-
+* Single python script that can do all (__new__) 
+    * change indiv-converter.yaml file first! 
+    * no need to change param.yaml
+    * change PARAM_INTEREST in `ConverterParams.py`
+    * give the -p as the folder where (multiple) bag is located
+    ```
+    python ConverterParams.py -p /mnt/mydrive/catabot_bag/barbados2024/test/test/
+    ```
 
 ### TODO
 * ground truth extractor such as ConverterGT.py
